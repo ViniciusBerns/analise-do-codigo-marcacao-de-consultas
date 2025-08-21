@@ -1,9 +1,11 @@
+// ====== IMPORTS DE DEPENDÊNCIAS E ESTILOS ======
 import React from 'react';
-import styled from 'styled-components/native';
-import { ViewStyle } from 'react-native';
-import { ListItem, Avatar } from 'react-native-elements';
-import theme from '../styles/theme';
+import styled from 'styled-components/native'; // Estilização dos componentes
+import { ViewStyle } from 'react-native'; // Tipagem para estilos personalizados
+import { ListItem, Avatar } from 'react-native-elements'; // Componentes visuais reutilizáveis
+import theme from '../styles/theme'; // Tema visual da aplicação
 
+// ====== TIPAGEM DOS DADOS DO MÉDICO ======
 interface Doctor {
   id: string;
   name: string;
@@ -11,13 +13,15 @@ interface Doctor {
   image: string;
 }
 
+// ====== TIPAGEM DAS PROPRIEDADES DO COMPONENTE ======
 interface DoctorListProps {
-  doctors: Doctor[];
-  onSelectDoctor: (doctor: Doctor) => void;
-  selectedDoctorId?: string;
-  style?: ViewStyle;
+  doctors: Doctor[]; // Lista de médicos
+  onSelectDoctor: (doctor: Doctor) => void; // Função executada ao selecionar um médico
+  selectedDoctorId?: string; // ID do médico atualmente selecionado
+  style?: ViewStyle; // Estilo personalizado opcional
 }
 
+// ====== COMPONENTE PRINCIPAL: LISTA DE MÉDICOS ======
 const DoctorList: React.FC<DoctorListProps> = ({
   doctors,
   onSelectDoctor,
@@ -54,6 +58,7 @@ const DoctorList: React.FC<DoctorListProps> = ({
   );
 };
 
+// ====== ESTILOS INLINE ======
 const styles = {
   listItem: {
     borderRadius: 8,
@@ -63,7 +68,7 @@ const styles = {
     borderColor: theme.colors.border,
   },
   selectedItem: {
-    backgroundColor: theme.colors.primary + '20',
+    backgroundColor: theme.colors.primary + '20', // Cor com transparência
     borderColor: theme.colors.primary,
   },
   avatar: {
@@ -81,8 +86,10 @@ const styles = {
   },
 };
 
+// ====== ESTILO DO CONTAINER PRINCIPAL ======
 const Container = styled.View`
   margin-bottom: 15px;
 `;
 
-export default DoctorList; 
+// ====== EXPORTAÇÃO DO COMPONENTE ======
+export default DoctorList;
