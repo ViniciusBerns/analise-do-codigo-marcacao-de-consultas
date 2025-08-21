@@ -1,20 +1,23 @@
+// ====== IMPORTS DE DEPENDÊNCIAS E ESTILOS ======
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components/native';
-import { TouchableOpacity } from 'react-native';
-import { Badge } from 'react-native-elements';
-import { useAuth } from '../contexts/AuthContext';
-import { useNavigation } from '@react-navigation/native';
-import { notificationService } from '../services/notifications';
-import theme from '../styles/theme';
+import styled from 'styled-components/native'; // Estilização com tema
+import { TouchableOpacity } from 'react-native'; // Componente de toque
+import { Badge } from 'react-native-elements'; // Componente de badge de notificação
+import { useAuth } from '../contexts/AuthContext'; // Hook de autenticação
+import { useNavigation } from '@react-navigation/native'; // Hook de navegação
+import { notificationService } from '../services/notifications'; // Serviço de notificações
+import theme from '../styles/theme'; // Tema visual
 
+// ====== COMPONENTE DO ÍCONE DE NOTIFICAÇÃO ======
 const NotificationBell: React.FC = () => {
-  const { user } = useAuth();
-  const navigation = useNavigation();
-  const [unreadCount, setUnreadCount] = useState(0);
+  const { user } = useAuth(); // Recupera o usuário autenticado
+  const navigation = useNavigation(); // Controle de navegação
+  const [unreadCount, setUnreadCount] = useState(0); // Contador de notificações não lidas
 
+  // ====== FUNÇÃO PARA CARREGAR CONTADOR DE NOTIFICAÇÕES ======
   const loadUnreadCount = async () => {
     if (!user?.id) return;
-    
+
     try {
       const count = await notificationService.getUnreadCount(user.id);
       setUnreadCount(count);
@@ -23,25 +26,26 @@ const NotificationBell: React.FC = () => {
     }
   };
 
+  // ====== EFEITO: RECARREGA NOTIFICAÇÕES A CADA 30s ======
   useEffect(() => {
     loadUnreadCount();
-    
-    // Recarrega o contador a cada 30 segundos
-    const interval = setInterval(loadUnreadCount, 30000);
-    
-    return () => clearInterval(interval);
+
+    const interval = setInterval(loadUnreadCount, 30000); // Atualiza a cada 30s
+    return () => clearInterval(interval); // Limpa intervalo ao desmontar
   }, [user?.id]);
 
-  // Atualiza quando a tela volta ao foco
+  // ====== EFEITO: ATUALIZA QUANDO A TELA RECEBE FOCO ======
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', loadUnreadCount);
     return unsubscribe;
   }, [navigation, user?.id]);
 
+  // ====== NAVEGA PARA A TELA DE NOTIFICAÇÕES ======
   const handlePress = () => {
     navigation.navigate('Notifications' as never);
   };
 
+  // ====== INTERFACE VISUAL DO COMPONENTE ======
   return (
     <TouchableOpacity onPress={handlePress}>
       <BellContainer>
@@ -59,6 +63,7 @@ const NotificationBell: React.FC = () => {
   );
 };
 
+// ====== ESTILOS INLINE (ESTÁTICOS) ======
 const styles = {
   badge: {
     position: 'absolute' as const,
@@ -70,14 +75,20 @@ const styles = {
   },
 };
 
+// ====== ESTILIZAÇÃO DOS COMPONENTES VISUAIS ======
+
 const BellContainer = styled.View`
   position: relative;
   padding: 8px;
 `;
+// Container do ícone e badge
 
 const BellIcon = styled.Text`
   font-size: 24px;
   color: ${theme.colors.white};
 `;
+// Ícone do sino (emoji)
 
+
+// ====== EXPORTAÇÃO DO COMPONENTE ======
 export default NotificationBell;

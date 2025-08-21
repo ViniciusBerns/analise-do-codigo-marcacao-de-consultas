@@ -1,3 +1,4 @@
+// ====== IMPORTAÇÕES ======
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
 import { ScrollView, ViewStyle, TextStyle } from 'react-native';
@@ -13,6 +14,7 @@ import StatisticsCard from '../components/StatisticsCard';
 import { statisticsService, Statistics } from '../services/statistics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// ====== TIPAGEM ======
 type AdminDashboardScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'AdminDashboard'>;
 };
@@ -39,6 +41,7 @@ interface StyledProps {
   status: string;
 }
 
+// ====== FUNÇÕES AUXILIARES PARA STATUS ======
 const getStatusColor = (status: string) => {
   switch (status) {
     case 'confirmed':
@@ -61,31 +64,36 @@ const getStatusText = (status: string) => {
   }
 };
 
+// ====== COMPONENTE PRINCIPAL ======
 const AdminDashboardScreen: React.FC = () => {
+  // Contexto de autenticação e navegação
   const { user, signOut } = useAuth();
   const navigation = useNavigation<AdminDashboardScreenProps['navigation']>();
+
+  // Estados locais
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [statistics, setStatistics] = useState<Statistics | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Função que carrega dados da AsyncStorage e serviço externo
   const loadData = async () => {
     try {
-      // Carrega consultas
+      // Carrega consultas armazenadas localmente
       const storedAppointments = await AsyncStorage.getItem('@MedicalApp:appointments');
       if (storedAppointments) {
         const allAppointments: Appointment[] = JSON.parse(storedAppointments);
         setAppointments(allAppointments);
       }
 
-      // Carrega usuários
+      // Carrega usuários armazenados localmente
       const storedUsers = await AsyncStorage.getItem('@MedicalApp:users');
       if (storedUsers) {
         const allUsers: User[] = JSON.parse(storedUsers);
         setUsers(allUsers);
       }
 
-      // Carrega estatísticas
+      // Busca estatísticas gerais via serviço
       const stats = await statisticsService.getGeneralStatistics();
       setStatistics(stats);
     } catch (error) {
@@ -95,13 +103,14 @@ const AdminDashboardScreen: React.FC = () => {
     }
   };
 
-  // Carrega os dados quando a tela estiver em foco
+  // Recarrega dados sempre que a tela volta ao foco
   useFocusEffect(
     React.useCallback(() => {
       loadData();
     }, [])
   );
 
+  // Função para atualizar o status da consulta e salvar localmente
   const handleUpdateStatus = async (appointmentId: string, newStatus: 'confirmed' | 'cancelled') => {
     try {
       const storedAppointments = await AsyncStorage.getItem('@MedicalApp:appointments');
@@ -114,7 +123,7 @@ const AdminDashboardScreen: React.FC = () => {
           return appointment;
         });
         await AsyncStorage.setItem('@MedicalApp:appointments', JSON.stringify(updatedAppointments));
-        loadData(); // Recarrega os dados
+        loadData(); // Recarrega dados após atualização
       }
     } catch (error) {
       console.error('Erro ao atualizar status:', error);
@@ -124,9 +133,11 @@ const AdminDashboardScreen: React.FC = () => {
   return (
     <Container>
       <Header />
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Title>Painel Administrativo</Title>
 
+        {/* Botões principais de navegação */}
         <Button
           title="Gerenciar Usuários"
           onPress={() => navigation.navigate('UserManagement')}
@@ -141,6 +152,7 @@ const AdminDashboardScreen: React.FC = () => {
           buttonStyle={styles.buttonStyle}
         />
 
+        {/* Seção de estatísticas gerais */}
         <SectionTitle>Estatísticas Gerais</SectionTitle>
         {statistics && (
           <StatisticsGrid>
@@ -171,6 +183,7 @@ const AdminDashboardScreen: React.FC = () => {
           </StatisticsGrid>
         )}
 
+        {/* Seção de especialidades mais procuradas */}
         <SectionTitle>Especialidades Mais Procuradas</SectionTitle>
         {statistics && Object.entries(statistics.specialties).length > 0 && (
           <SpecialtyContainer>
@@ -187,6 +200,7 @@ const AdminDashboardScreen: React.FC = () => {
           </SpecialtyContainer>
         )}
 
+        {/* Seção últimas consultas */}
         <SectionTitle>Últimas Consultas</SectionTitle>
         {loading ? (
           <LoadingText>Carregando dados...</LoadingText>
@@ -205,11 +219,15 @@ const AdminDashboardScreen: React.FC = () => {
                 <Text style={styles.dateTime as TextStyle}>
                   {appointment.date} às {appointment.time}
                 </Text>
+
+                {/* Status da consulta */}
                 <StatusBadge status={appointment.status}>
                   <StatusText status={appointment.status}>
                     {getStatusText(appointment.status)}
                   </StatusText>
                 </StatusBadge>
+
+                {/* Botões para alterar status se pendente */}
                 {appointment.status === 'pending' && (
                   <ButtonContainer>
                     <Button
@@ -231,6 +249,7 @@ const AdminDashboardScreen: React.FC = () => {
           ))
         )}
 
+        {/* Botão para sair */}
         <Button
           title="Sair"
           onPress={signOut}
@@ -242,6 +261,7 @@ const AdminDashboardScreen: React.FC = () => {
   );
 };
 
+// ====== ESTILOS INLINE ======
 const styles = {
   scrollContent: {
     padding: 20,
@@ -287,6 +307,7 @@ const styles = {
   },
 };
 
+// ====== ESTILOS COM STYLED-COMPONENTS ======
 const Container = styled.View`
   flex: 1;
   background-color: ${theme.colors.background};
@@ -332,7 +353,7 @@ const EmptyText = styled.Text`
 `;
 
 const StatusBadge = styled.View<StyledProps>`
-  background-color: ${(props: StyledProps) => getStatusColor(props.status) + '20'};
+  background-color: ${(props) => getStatusColor(props.status) + '20'};
   padding: 4px 8px;
   border-radius: 4px;
   align-self: flex-start;
@@ -340,7 +361,7 @@ const StatusBadge = styled.View<StyledProps>`
 `;
 
 const StatusText = styled.Text<StyledProps>`
-  color: ${(props: StyledProps) => getStatusColor(props.status)};
+  color: ${(props) => getStatusColor(props.status)};
   font-size: 12px;
   font-weight: 500;
 `;
@@ -388,4 +409,5 @@ const SpecialtyCount = styled.Text`
   font-weight: 600;
 `;
 
-export default AdminDashboardScreen; 
+export default AdminDashboardScreen;
+// Exporta o componente
