@@ -14,8 +14,8 @@ import EditProfileScreen from '../screens/EditProfileScreen/EditProfileScreen';
 import AdminDashboardScreen from '../screens/AdminDashboardScreen';
 import DoctorDashboardScreen from '../screens/DoctorDashboardScreen';
 import PatientDashboardScreen from '../screens/PatientDashboardScreen';
-import NotificationsScreen from '../screens/NotificationsScreen/NotificationsScreen';
-import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
+import NotificationsScreen from '../screens/NotificationsScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
