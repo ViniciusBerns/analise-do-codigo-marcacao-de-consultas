@@ -2,12 +2,12 @@ import React, { useState } from 'react'; // Importa React e hook useState para g
 import styled from 'styled-components/native'; // Importa styled-components para estilização no React Native
 import { ScrollView, ViewStyle, Alert } from 'react-native'; // Importa componentes nativos e Alert para mensagens
 import { Button, Input } from 'react-native-elements'; // Importa componentes prontos de UI
-import { useAuth } from '../contexts/AuthContext'; // Hook customizado para autenticação e dados do usuário
+import { useAuth } from '../../contexts/AuthContext'; // Hook customizado para autenticação e dados do usuário
 import { useNavigation } from '@react-navigation/native'; // Hook para navegação entre telas
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'; // Tipagem para navegação stack
-import { RootStackParamList } from '../types/navigation'; // Tipagem das rotas do app
-import theme from '../styles/theme'; // Tema customizado com cores, fontes etc.
-import Header from '../components/Header'; // Componente header da aplicação
+import { RootStackParamList } from '../../types/navigation'; // Tipagem das rotas do app
+import theme from '../../styles/theme'; // Tema customizado com cores, fontes etc.
+import Header from '../../components/Header'; // Componente header da aplicação
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Armazenamento local assíncrono
 
 // Define o tipo das props da navegação para esta tela específica

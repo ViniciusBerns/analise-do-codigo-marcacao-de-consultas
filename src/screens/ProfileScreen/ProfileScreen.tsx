@@ -1,13 +1,13 @@
-import React from 'react';
-import styled from 'styled-components/native';
-import { Button, ListItem } from 'react-native-elements';
-import { useAuth } from '../contexts/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/navigation';
-import theme from '../styles/theme';
-import Header from '../components/Header';
+import React from 'react';
 import { ViewStyle } from 'react-native';
+import { Button } from 'react-native-elements';
+import styled from 'styled-components/native';
+import Header from '../../components/Header';
+import { useAuth } from '../../contexts/AuthContext';
+import theme from '../../styles/theme';
+import { RootStackParamList } from '../../types/navigation';
 
 // Define o tipo da prop de navegação para a tela de perfil
 type ProfileScreenProps = {
